@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "dagster>=1.13.2",
+    "dagster-webserver>=1.13.2",
     "polars>=1.40.1",
     "python-dotenv>=1.2.2",
 ]
