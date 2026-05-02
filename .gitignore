@@ -1,2 +1,9 @@
 # Env variables
 .env
+
+# Cache
+__pycache__/
+*.pyc
+
+# Dagster tmp
+.tmp*
