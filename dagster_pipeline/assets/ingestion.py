@@ -5,12 +5,12 @@ from dagster import asset, Output, MetadataValue
 from dagster_pipeline.config import SNCF_API_URL
 
 
-@asset(group_name="raw", compute_kind="python", defs="sncf_api")
+@asset(group_name="raw", compute_kind="python", required_resource_keys={"sncf_api"})
 def raw_sncf_disruptions(context) -> Output[pl.DataFrame]:
     """Ingestion of raw SNCF disruptions data."""
     resp = context.resources.sncf_api.connect(SNCF_API_URL)
 
-    data = resp.json().get("disruptions", [])
+    data = resp.get("disruptions", [])
     df = pl.json_normalize(data)
 
     context.log.info(f"{len(df)} disruptions fetched.")
