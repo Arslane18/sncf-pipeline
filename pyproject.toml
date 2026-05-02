@@ -8,6 +8,7 @@ dependencies = [
     "dagster>=1.13.2",
     "dagster-webserver>=1.13.2",
     "polars>=1.40.1",
+    "pyarrow>=24.0.0",
     "python-dotenv>=1.2.2",
 ]
 
