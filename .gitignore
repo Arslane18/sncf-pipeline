@@ -7,3 +7,9 @@ __pycache__/
 
 # Dagster tmp
 .tmp*
+
+# Dbt target and dbt packages
+target/
+dbt_packages/
+logs/
+dbt_internal_packages/
