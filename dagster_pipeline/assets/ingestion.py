@@ -22,3 +22,14 @@ def raw_sncf_disruptions(context) -> Output[pl.DataFrame]:
             "preview": MetadataValue.md(df.head(3).to_pandas().to_markdown()),
         }
     )
+
+@asset(group_name="clean", compute_kind="python", deps=["raw_sncf_disruptions"])
+def clean_sncf_disruptions(raw_sncf_disruptions: pl.DataFrame) -> pl.DataFrame:
+    """Cleaning of raw SNCF disruptions data."""
+    df = raw_sncf_disruptions.clone()
+
+    df = df.select(["id", "status", "severity.name", "updated_at", "messages"])
+    df = df.drop_nulls(subset=["id", "status"])
+    df.write_parquet("data/clean_sncf_disruptions.parquet")
+
+    return df
