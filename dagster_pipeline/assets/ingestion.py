@@ -5,7 +5,7 @@ from dagster import asset, Output, MetadataValue
 from dagster_pipeline.config import SNCF_API_URL
 
 
-@asset(group_name="raw", compute_kind="python", required_resource_keys={"sncf_api"})
+@asset(group_name="extract", compute_kind="python", required_resource_keys={"sncf_api"})
 def raw_sncf_disruptions(context) -> Output[pl.DataFrame]:
     """Ingestion of raw SNCF disruptions data."""
     resp = context.resources.sncf_api.connect(SNCF_API_URL)
@@ -23,7 +23,7 @@ def raw_sncf_disruptions(context) -> Output[pl.DataFrame]:
         }
     )
 
-@asset(group_name="clean", compute_kind="python", deps=["raw_sncf_disruptions"])
+@asset(group_name="extract", compute_kind="python", deps=["raw_sncf_disruptions"])
 def clean_sncf_disruptions(raw_sncf_disruptions: pl.DataFrame) -> pl.DataFrame:
     """Cleaning of raw SNCF disruptions data."""
     df = raw_sncf_disruptions.clone()
