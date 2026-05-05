@@ -1,11 +1,16 @@
-import requests
 import polars as pl
 from dagster import asset, Output, MetadataValue
 
 from dagster_pipeline.config import SNCF_API_URL
 
+from .utils import get_row_count, insert_or_replace
 
-@asset(group_name="extract", compute_kind="python", required_resource_keys={"sncf_api"})
+
+@asset(
+        group_name="ingestion", 
+        compute_kind="python", 
+        required_resource_keys={"sncf_api"}
+)
 def fetch_sncf_disruptions(context) -> Output[pl.DataFrame]:
     """Fetching SNCF disruptions data."""
     resp = context.resources.sncf_api.connect(SNCF_API_URL)
@@ -23,32 +28,29 @@ def fetch_sncf_disruptions(context) -> Output[pl.DataFrame]:
         }
     )
 
-@asset(group_name="extract", compute_kind="python", deps=["fetch_sncf_disruptions"], required_resource_keys={"duckdb"})
+@asset(
+        group_name="ingestion", 
+        compute_kind="python", 
+        required_resource_keys={"duckdb"}
+)
 def save_raw_sncf_disruptions(context, fetch_sncf_disruptions: pl.DataFrame):
-    """Saving raw SNCF disruptions data."""
+    """Persist raw SNCF disruptions into DuckDB."""
+
     df = fetch_sncf_disruptions.clone()
 
-    df = df.select(["id", "status", "severity.name", "updated_at", "messages"])
-    df = df.drop_nulls(subset=["id", "status"])
-    conn = context.resources.duckdb.get_connection()
-    try:
-        conn.execute("""
-            CREATE TABLE IF NOT EXISTS raw_sncf_disruptions AS
-            SELECT * FROM df WHERE 1=0
-        """)
- 
-        conn.execute("""
-            DELETE FROM raw_sncf_disruptions
-            WHERE id IN (SELECT id FROM df)
-        """)
-        conn.execute("INSERT INTO raw_sncf_disruptions SELECT * FROM df")
- 
-        row_count = conn.execute(
-            "SELECT COUNT(*) FROM raw_sncf_disruptions"
-        ).fetchone()[0]
- 
+    with context.resources.duckdb.get_connection() as conn:
+        insert_or_replace(conn, df, "raw_sncf_disruptions")
+
+        row_count = get_row_count(conn, "raw_sncf_disruptions")
+
         context.log.info(
-            f"{len(df)} insertions — total lines in DB : {row_count} lines."
+            f"{len(df)} rows upserted — total: {row_count}"
         )
-    finally:
-        conn.close()
+
+        return Output(
+            None,
+            metadata={
+                "rows_inserted": len(df),
+                "total_rows": row_count,
+            },
+        )
