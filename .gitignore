@@ -16,3 +16,6 @@ dbt_internal_packages/
 
 # Data
 data/*
+
+# VSCode settings
+.vscode/
