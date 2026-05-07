@@ -10,3 +10,6 @@ SNCF_TOKEN = os.getenv("SNCF_TOKEN")
 
 # Database
 DB_PATH = "data/sncf.duckdb"
+
+# DBT
+DBT_PROJECT_DIR = Path(__file__).parent.parent / "dbt_scnf"
