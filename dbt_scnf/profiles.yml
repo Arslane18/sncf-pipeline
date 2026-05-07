@@ -3,4 +3,4 @@ dbt_scnf:
   outputs:
     dev:
       type: duckdb
-      path: "{{ env_var('DUCKDB_PATH', 'data/sncf.duckdb') }}"
+      path: "../{{ env_var('DUCKDB_PATH', 'data/sncf.duckdb') }}"
