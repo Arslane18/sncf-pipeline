@@ -2,16 +2,16 @@
 -- Nettoyage SQL minimal, 1 source = 1 modèle staging
 
 WITH source AS (
-    SELECT * FROM data.raw_sncf_disruptions
+    SELECT * FROM {{ source('sncf_disruptions', 'raw_sncf_disruptions') }}
 ),
-cleaned AS (
+renamed AS (
     SELECT
         id,
         status,
-        severity,
-        updated_at::timestamp AS updated_at,
-        updated_at::date      AS disruption_date
+        "severity.name" AS severity_name,
+        updated_at AS updated_at,
+        messages
     FROM source
     WHERE id IS NOT NULL
 )
-SELECT * FROM cleaned
+SELECT * FROM renamed
