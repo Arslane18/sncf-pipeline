@@ -13,6 +13,7 @@ target/
 dbt_packages/
 logs/
 dbt_internal_packages/
+.user.yml
 
 # Data
 data/*
