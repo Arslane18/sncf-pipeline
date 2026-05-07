@@ -8,7 +8,7 @@ renamed AS (
     SELECT
         id,
         status,
-        "severity.name" AS severity_name,
+        "severity.name" AS severity,
         updated_at AS updated_at,
         messages
     FROM source
