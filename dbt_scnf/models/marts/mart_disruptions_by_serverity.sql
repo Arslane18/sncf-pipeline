@@ -1,5 +1,5 @@
 with staging as (
-    select * from stg_sncf_disruptions
+    select * from {{ ref('stg_sncf_disruptions') }}
 )
 
 select
