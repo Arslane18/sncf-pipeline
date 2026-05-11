@@ -6,7 +6,8 @@ renamed AS (
         id,
         status,
         "severity.name" AS severity,
-        updated_at AS updated_at,
+        strptime(updated_at, '%Y%m%dT%H%M%S') AS updated_at,
+        strptime(updated_at, '%Y%m%dT%H%M%S')::DATE AS updated_date,
         messages
     FROM source
     WHERE id IS NOT NULL
