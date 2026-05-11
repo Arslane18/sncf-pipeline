@@ -64,6 +64,8 @@ sncf-pipeline/
 │   ├── definitions.py         # Dagster Definitions entry point
 │   ├── resources.py           # SNCFResource (ConfigurableResource)
 │   └── schedules.py           # (Scheduled runs)
+├── dashboard/
+    └── dashboard_app.py       # Dashboard to display insights
 ├── data/                      # Local duckdb DB
 ├── dbt-scnf/
 │   ├── models/
@@ -138,7 +140,8 @@ uv run dagster dev
 ## Roadmap
 
 - [ ] Implement dbt models on top for data transformation
-- [ ] Implement dashboard for presentation of data insights 
+- [ ] Implement dashboard for presentation of data insights (in a perfect world I would use polars but Im too bad actually)
+- [ ] Implement logic to get historical data (since it passes through 3 status values)
 - [ ] Add asset checks for data quality validation
 - [ ] Containerize with Docker for deployment
 - [ ] Integrate with a cloud storage backend (S3 / GCS)
