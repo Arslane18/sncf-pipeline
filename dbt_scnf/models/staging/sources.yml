@@ -1,0 +1,23 @@
+sources:
+  - name: sncf_disruptions
+    description: "Data ingestion for SNCF disruptions."
+    schema: main  # default schema for duckdb
+    tables:
+      - name: raw_sncf_disruptions
+        description: "Raw data for SNCF disruptions."
+        columns:
+          - name: id
+            description: "Unique id of the disruption."
+            tests:
+              - unique
+              - not_null
+          - name: status
+            description: "Status of the disruption (active, past…)."
+            tests:
+              - not_null
+          - name: "severity.name"
+            description: "Level of severity."
+          - name: updated_at
+            description: "Date of last update."
+          - name: messages
+            description: "Messages associated with the disruption."
