@@ -1,5 +1,6 @@
 import polars as pl
 from dagster import asset, Output, MetadataValue
+from datetime import datetime, timezone
 
 from dagster_pipeline.config import SNCF_API_URL
 
@@ -38,6 +39,8 @@ def save_raw_sncf_disruptions(context, fetch_sncf_disruptions: pl.DataFrame):
 
     df = fetch_sncf_disruptions.clone()
 
+    df = df.with_columns(pl.lit(datetime.now(tz=timezone.utc)).alias("ingestion_ts"))   # We use UTC bc SNCF uses it aswell.
+    
     with context.resources.duckdb.get_connection() as conn:
         insert_or_replace(conn, df, "raw_sncf_disruptions")
 

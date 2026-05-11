@@ -18,6 +18,7 @@ def insert_or_replace(conn, df: pl.DataFrame, table_name: str):
     status VARCHAR,
     "severity.name" VARCHAR,
     updated_at VARCHAR,
+    ingestion_ts TIMESTAMP WITH TIME ZONE,
     messages JSON
     )
     """)
@@ -30,6 +31,7 @@ def insert_or_replace(conn, df: pl.DataFrame, table_name: str):
            status,
            "severity.name",
            updated_at,
+           ingestion_ts,
            messages
     FROM df_temp
     """)
