@@ -13,12 +13,23 @@ def insert_or_replace(conn, df: pl.DataFrame, table_name: str):
 
     # Create the target table if it doesn't exist (with the same schema as df)
     conn.execute(f"""
-    CREATE TABLE IF NOT EXISTS {table_name} AS
-    SELECT * FROM df_temp WHERE 1=0
+    CREATE TABLE IF NOT EXISTS raw_sncf_disruptions (
+    id VARCHAR PRIMARY KEY,
+    status VARCHAR,
+    "severity.name" VARCHAR,
+    updated_at VARCHAR,
+    messages JSON
+    )
     """)
 
     # Upsert data from df_temp into the target table, thanks to DuckDB's support for the "INSERT OR REPLACE" syntax.
     conn.execute(f"""
     INSERT OR REPLACE INTO {table_name}
-    SELECT * FROM df_temp
+    SELECT 
+           id,
+           status,
+           "severity.name",
+           updated_at,
+           messages
+    FROM df_temp
     """)
