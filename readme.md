@@ -129,6 +129,17 @@ uv run dagster dev
 
 ---
 
+### Running the dahsboard
+
+```bash
+# Launch the Dagster web UI
+uv run streamlit run dashboard/dahsboard_app.py
+
+# Navigate to http://localhost:8501
+```
+
+---
+
 ## Data Flow
 
 1. **Ingestion** — Calls the SNCF `/disruptions` endpoint with a configurable `count` parameter, deserializes the JSON payload, and normalizes nested fields into a flat Polars DataFrame.
