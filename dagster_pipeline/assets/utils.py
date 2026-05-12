@@ -25,7 +25,7 @@ def insert_or_replace(conn, df: pl.DataFrame, table_name: str):
 
     # Upsert data from df_temp into the target table, thanks to DuckDB's support for the "INSERT OR REPLACE" syntax.
     conn.execute(f"""
-    INSERT OR REPLACE INTO {table_name}
+    INSERT INTO {table_name}
     SELECT 
            id,
            status,
