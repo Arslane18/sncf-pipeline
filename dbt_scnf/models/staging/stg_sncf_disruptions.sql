@@ -8,8 +8,8 @@ renamed AS (
         "severity.name" AS severity,
         strptime(updated_at, '%Y%m%dT%H%M%S') AS updated_at,
         strptime(updated_at, '%Y%m%dT%H%M%S')::DATE AS updated_date,
+        ingestion_ts,
         messages
     FROM source
-    WHERE id IS NOT NULL
 )
 SELECT * FROM renamed
