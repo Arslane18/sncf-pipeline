@@ -14,12 +14,13 @@ def insert_or_replace(conn, df: pl.DataFrame, table_name: str):
     # Create the target table if it doesn't exist (with the same schema as df)
     conn.execute(f"""
     CREATE TABLE IF NOT EXISTS raw_sncf_disruptions (
-    id VARCHAR PRIMARY KEY,
+    id VARCHAR,
     status VARCHAR,
     "severity.name" VARCHAR,
     updated_at VARCHAR,
     ingestion_ts TIMESTAMP WITH TIME ZONE,
-    messages JSON
+    messages JSON,
+    PRIMARY KEY (id, ingestion_ts)
     )
     """)
 
