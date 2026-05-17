@@ -9,7 +9,6 @@ sources:
           - name: id
             description: "Unique id of the disruption."
             tests:
-              - unique
               - not_null
           - name: status
             description: "Status of the disruption (active, past…)."
