@@ -15,7 +15,7 @@ conn = duckdb.connect("data/sncf.duckdb")
 # ── Load data ────────────────────────────────────────────────────────────────
 
 df_severity = conn.execute("""
-    SELECT * FROM mart_disruptions_by_serverity
+    SELECT * FROM marts_disruptions_by_serverity
 """).fetchdf()
 
 df_latest = conn.execute("""
@@ -84,6 +84,42 @@ severity_agg = (
 )
 st.bar_chart(severity_agg.set_index("severity"))
 
+st.divider()
+
+# ── Status transitions ────────────────────────────────────────────────────────
+ 
+st.subheader("🔄 Status transitions")
+ 
+col_a, col_b = st.columns(2)
+ 
+with col_a:
+    # Most common transitions
+    transition_counts = (
+        df_transitions
+        .groupby(["old_status", "new_status"])
+        .size()
+        .reset_index(name="count")
+        .sort_values("count", ascending=False)
+    )
+    transition_counts["transition"] = (
+        transition_counts["old_status"] + " → " + transition_counts["new_status"]
+    )
+    st.markdown("**Most common transitions**")
+    st.bar_chart(transition_counts.set_index("transition")["count"])
+ 
+with col_b:
+    # Disruptions with the most transitions (unstable ones)
+    most_transitions = (
+        df_transitions
+        .groupby("id")
+        .size()
+        .reset_index(name="nb_transitions")
+        .sort_values("nb_transitions", ascending=False)
+        .head(10)
+    )
+    st.markdown("**Top 10 most unstable disruptions**")
+    st.dataframe(most_transitions, width='stretch', hide_index=True)
+ 
 st.divider()
 
 # ── Latest disruptions ────────────────────────────────────────────────────────
