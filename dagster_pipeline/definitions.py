@@ -8,20 +8,9 @@ from dagster_pipeline.schedules import sncf_ingestion_job
 from dagster_pipeline.sensors import sncf_disruptions_sensor
 
 
-dbt_project = DbtProject(
-    project_dir=DBT_PROJECT_DIR,
-    profiles_dir=DBT_PROJECT_DIR,
-)
-
-@dbt_assets(manifest=dbt_project.manifest_path)
-def sncf_dbt_assets(context, dbt: DbtCliResource):
-    yield from dbt.cli(["run"], context=context).stream()
-
-
 defs = Definitions(
     assets=[
         *load_assets_from_package_module(assets),
-        sncf_dbt_assets,          
     ],
     jobs=[sncf_ingestion_job],
     sensors=[sncf_disruptions_sensor],
