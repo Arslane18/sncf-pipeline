@@ -13,7 +13,7 @@ class SNCFResource(ConfigurableResource):
         resp = requests.get(
             api_url,
             headers={"Authorization": self.sncf_token},
-            params={"count": count}
+            #params={"count": count}
         )
         resp.raise_for_status()
         return resp.json()
