@@ -1,6 +1,7 @@
 import streamlit as st
 import duckdb
 import pandas as pd
+from dagster_pipeline.config import DB_PATH
 
 st.set_page_config(
     page_title="SNCF Disruptions Dashboard",
@@ -10,7 +11,7 @@ st.set_page_config(
 
 st.title("🚆 SNCF Disruptions Dashboard")
 
-conn = duckdb.connect("data/sncf.duckdb")
+conn = duckdb.connect(DB_PATH)
 
 # ── Load data ────────────────────────────────────────────────────────────────
 
