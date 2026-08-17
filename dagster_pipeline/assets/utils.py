@@ -6,8 +6,8 @@ def get_row_count(conn, table_name: str) -> int:
     return conn.execute(f"SELECT COUNT(*) FROM {table_name}").fetchone()[0]
 
 
-def insert_or_replace(conn, df: pl.DataFrame, table_name: str):
-    """Helper function to perform an upsert operation on the specified table."""
+def insert_data(conn, df: pl.DataFrame, table_name: str):
+    """Helper function to perform an insert operation on the specified table."""
 
     conn.register("df_temp", df)
 
@@ -24,7 +24,7 @@ def insert_or_replace(conn, df: pl.DataFrame, table_name: str):
     )
     """)
 
-    # Upsert data from df_temp into the target table, thanks to DuckDB's support for the "INSERT OR REPLACE" syntax.
+    # insert data from df_temp into the target table, thanks to DuckDB's support for the "INSERT OR REPLACE" syntax.
     conn.execute(f"""
     INSERT INTO {table_name}
     SELECT 

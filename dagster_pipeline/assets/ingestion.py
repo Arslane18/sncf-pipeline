@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 
 from dagster_pipeline.config import SNCF_API_URL
 
-from .utils import get_row_count, insert_or_replace
+from .utils import get_row_count, insert_data
 
 
 @asset(
@@ -42,7 +42,7 @@ def save_raw_sncf_disruptions(context, fetch_sncf_disruptions: pl.DataFrame):
     df = df.with_columns(pl.lit(datetime.now(tz=timezone.utc)).alias("ingestion_ts"))   # We use UTC bc SNCF uses it aswell.
     
     with context.resources.duckdb.get_connection() as conn:
-        insert_or_replace(conn, df, "raw_sncf_disruptions")
+        insert_data(conn, df, "raw_sncf_disruptions")
 
         row_count = get_row_count(conn, "raw_sncf_disruptions")
 
